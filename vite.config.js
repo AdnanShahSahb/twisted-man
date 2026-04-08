@@ -14,9 +14,9 @@ export default {
         emptyOutDir: true, // Empty the folder first
         sourcemap: true // Add sourcemap
     },
-    // plugins:
-    //     [
-    //         restart({ restart: ['../static/**',] }) // Restart server on static file change
-    //     ],
-    base: 'https://adnanshahsahb.github.io/twisted-man/',
+    plugins:
+        [
+            restart({ restart: ['../static/**',] }) // Restart server on static file change
+        ],
+    base: 'https://adnanshahsahb.github.io/twisted-man/twisted-man/',
 }
