@@ -13,20 +13,36 @@ const scene = new THREE.Scene();
 /**
  * Loaders
  */
-const textureLoader = new THREE.TextureLoader();
-const gltfLoader = new GLTFLoader();
-const cubeTextureLoader = new THREE.CubeTextureLoader();
+// const textureLoader = new THREE.TextureLoader();
+// const gltfLoader = new GLTFLoader();
+// const cubeTextureLoader = new THREE.CubeTextureLoader();
+const loadingScreen = document.querySelector('.loader');
 
+const loadingManager = new THREE.LoadingManager(
+    () => {
+        // onLoad (everything finished)
+        loadingScreen.classList.add('hidden');
+        controls.update();
+        renderer.render(scene, camera);
+        setTimeout(() => {
+            tick();
+        }, 1000);
+    },
+);
+
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const gltfLoader = new GLTFLoader(loadingManager);
+const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager);
 /**
  * Environment map
  */
 const environmentMap = cubeTextureLoader.load([
-    '/envMap/0/px.jpg',
-    '/envMap/0/nx.jpg',
-    '/envMap/0/py.jpg',
-    '/envMap/0/ny.jpg',
-    '/envMap/0/pz.jpg',
-    '/envMap/0/nz.jpg'
+    './envMap/0/px.jpg',
+    './envMap/0/nx.jpg',
+    './envMap/0/py.jpg',
+    './envMap/0/ny.jpg',
+    './envMap/0/pz.jpg',
+    './envMap/0/nz.jpg'
 ]);
 
 scene.background = environmentMap;
@@ -35,9 +51,9 @@ scene.environment = environmentMap;
 /**
  * Material
  */
-const mapTexture = textureLoader.load('/model/LeePerrySmith/color.jpg');
+const mapTexture = textureLoader.load('./model/LeePerrySmith/color.jpg');
 mapTexture.colorSpace = THREE.SRGBColorSpace;
-const normalTexture = textureLoader.load('/model/LeePerrySmith/normal.jpg');
+const normalTexture = textureLoader.load('./model/LeePerrySmith/normal.jpg');
 
 const customUniforms = { uTime: { value: 0 } };
 
@@ -95,9 +111,9 @@ modifyShader(depthMat);
  * Models
  */
 let meshRef = null;
-gltfLoader.load('/model/LeePerrySmith/LeePerrySmith.glb', (gltf) => {
+gltfLoader.load('./model/LeePerrySmith/LeePerrySmith.glb', (gltf) => {
     const mesh = gltf.scene.children[0];
-    mesh.rotation.y = Math.PI * 0.5;
+    mesh.rotation.y = Math.PI;
     mesh.material = material;
     mesh.customDepthMaterial = depthMat;
     scene.add(mesh);
@@ -129,7 +145,7 @@ window.addEventListener('resize', () => {
 });
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-camera.position.set(4, 1, -4);
+camera.position.set(0, 2, -10);
 scene.add(camera);
 
 const controls = new OrbitControls(camera, canvas);
@@ -174,9 +190,10 @@ const tick = () => {
         currentEnd = twistSequence[currentTargetIndex];
     }
 
+
     controls.update();
     renderer.render(scene, camera);
+
     window.requestAnimationFrame(tick);
 };
 
-tick();
