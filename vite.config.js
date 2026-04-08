@@ -18,5 +18,5 @@ export default {
         [
             restart({ restart: ['../static/**',] }) // Restart server on static file change
         ],
-    base: 'https://adnanshahsahb.github.io/twisted-man/',
+    base: '/twisted-man/',
 }
